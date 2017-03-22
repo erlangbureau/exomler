@@ -7,5 +7,6 @@
         stdlib,
         parselib
     ]},
+    {modules, []},
     {env, []}
  ]}.
