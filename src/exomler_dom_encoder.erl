@@ -37,7 +37,8 @@ tag_attrs(Attrs) ->
     tag_attrs(Attrs, <<>>).
 
 tag_attrs([{Key, Value}|Tail], EncodedAttrs) ->
-    EncodedAttr = <<" ", Key/binary, "=\"",Value/binary, "\"">>, 
+    EscapedValue = escape(Value),
+    EncodedAttr = <<" ", Key/binary, "=\"", EscapedValue/binary, "\"">>, 
     tag_attrs(Tail, <<EncodedAttrs/binary, EncodedAttr/binary>>);
 tag_attrs([], EncodedAttrs) ->
     EncodedAttrs.
@@ -93,7 +94,9 @@ encode_content_test_() ->
 encode_attributes_test_() -> 
     [
     ?_assertEqual(<<"<html xmlns=\"w3c\"></html>">>, 
-        encode({<<"html">>, [{<<"xmlns">>,<<"w3c">>}], []}))
-  ].
+        encode({<<"html">>, [{<<"xmlns">>,<<"w3c">>}], []})),
+    ?_assertEqual(<<"<foo bar=\"&amp;&lt;&gt;\"></foo>">>, 
+        encode({<<"foo">>, [{<<"bar">>,<<"&<>">>}], []}))
+    ].
 
 -endif.
